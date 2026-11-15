@@ -1,0 +1,19 @@
+.DS_Store
+._*
+
+# kext and SSDT build output
+out/
+*.o
+abi/
+
+# compiled tools (build them from the sources next to them)
+tools/audiostate
+tools/autorotate
+tools/ecwatch
+tools/freqtest
+tools/gpubusy
+tools/hidsensors
+tools/iorep
+tools/irqstat
+tools/musicfix
+tools/rotate

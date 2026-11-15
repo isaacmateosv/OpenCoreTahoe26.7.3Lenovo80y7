@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleExecutable</key>
+	<string>LidWatch</string>
+	<key>CFBundleIdentifier</key>
+	<string>org.yoga920.LidWatch</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>LidWatch</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>MacOSX</string>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>LidWatch</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.yoga920.LidWatch</string>
+			<key>IOClass</key>
+			<string>LidWatch</string>
+			<key>IOMatchCategory</key>
+			<string>LidWatch</string>
+			<key>IONameMatch</key>
+			<string>PNP0C0D</string>
+			<key>IOProbeScore</key>
+			<integer>0</integer>
+			<key>IOProviderClass</key>
+			<string>IOACPIPlatformDevice</string>
+			<key>ConfirmPolls</key>
+			<integer>2</integer>
+			<key>MaxReplays</key>
+			<integer>3</integer>
+			<key>PollIntervalMs</key>
+			<integer>2000</integer>
+			<key>StartDelayMs</key>
+			<integer>20000</integer>
+			<key>WakeDelayMs</key>
+			<integer>5000</integer>
+		</dict>
+	</dict>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IOACPIFamily</key>
+		<string>1.0.0d1</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>14</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>14</string>
+		<key>com.apple.kpi.mach</key>
+		<string>14</string>
+	</dict>
+	<key>OSBundleRequired</key>
+	<string>Root</string>
+</dict>
+</plist>
