@@ -62,7 +62,9 @@ This is a complete, tested OpenCore EFI for the Yoga 920 convertible. It also in
 | Hibernation | ⚠️ | Off by design (OpenCore `HibernateMode = None`); sleep is S3 only |
 | Tent / tablet mode | ⚠️ | Not tested yet together with LidWatch |
 | AirDrop, Universal Clipboard, Continuity | ❌ | The Intel card has no AWDL; needs a different Wi-Fi card |
-| DRM-protected video: Apple TV app shows and movies, music videos in Music, Safari | ❌ | FairPlay video needs the Intel GPU's hardware DRM path, which fails here, and macOS has no software route for it. Trailers and previews play. Workaround: `tv.apple.com` / `music.apple.com` in a Chromium-based browser (Widevine) ([details](docs/apple-music.md#what-still-doesnt-play-protected-video)) |
+| Music videos in Apple Music | ❌ | Protected video. With `musicfix` the key arrives, but decoding needs the Intel GPU's hardware DRM path, and macOS has no software route ([details](docs/apple-music.md#what-still-doesnt-play-protected-video)) |
+| Apple TV app: shows and movies | ❌ | Their FairPlay key request fails (`-15842`). Free previews and trailers have no DRM and play ✅ |
+| Safari DRM video | ❌ | Same FairPlay limit. Workaround for all three: `music.apple.com` and `tv.apple.com` in a Chromium-based browser such as Brave (Widevine) |
 | Fingerprint reader | ❌ | macOS supports only Apple's Touch ID |
 
 ## Quick start
