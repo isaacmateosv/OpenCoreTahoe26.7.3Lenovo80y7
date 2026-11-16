@@ -2,6 +2,11 @@
 
 How this EFI reached its current state on macOS Tahoe 26.7.3 (25G342). Each entry was verified on the hardware before the next one was made.
 
+## 2026-11-15: FileVault, display note
+
+- **FileVault works.** Added `UEFI > ProtocolOverrides > AppleSmcIo` and `HashServices` (`FirmwareVolume`, `KeySupport`, `ProvideConsoleGop` and `UIScale` were already set). Verified: Apple's unlock screen worked with the internal keyboard, and encryption resumed after the restart. On this machine System Settings shows "Encryption finished" too early, and encryption only runs on AC power. ([guide](docs/filevault.md))
+- **Display:** corrected the advice to stay at 1920 × 1080. "Larger Text" sizes measured no heavier, slightly lighter in fact; only "More Space" sizes add GPU work.
+
 ## 2026-11-15: first public release
 
 **Touchscreen sleep**

@@ -31,7 +31,11 @@ It is safe to run again. `tools/install-tools.sh --uninstall` removes everything
 
 ## Display
 
-Use **1920 × 1080 (Default)** in System Settings › Displays. It is the native 2× mode of the 4K panel. Scaled modes make the iGPU resample every frame, and animations stutter. Reduce Transparency (Accessibility › Display) also helps the UHD 620.
+Pick the size you like in System Settings › Displays. "Larger Text" sizes cost no more GPU than the native 2× mode (1920 × 1080). They draw fewer pixels and upscale once, and text is only slightly softer. Measured with six scripted Mission Control open/close cycles, two runs each: at looks-like 1680 × 945, GPU utilization was 8–9%; at 1920 × 1080, 11–13%. "More Space" sizes render above 4K and do add GPU work. Reduce Transparency (Accessibility › Display) also helps the UHD 620.
+
+## FileVault
+
+Turn on disk encryption once everything works. The OpenCore side is already set up: see [filevault.md](filevault.md).
 
 ## Battery
 

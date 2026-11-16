@@ -31,7 +31,7 @@ For maximum battery life on the go, macOS **Low Power Mode** caps the CPU at 2.6
 ## GPU: UHD 620 settings
 
 - **`framebuffer-unifiedmem` = 2048 MB.** The iGPU reports 2048 MB of VRAM (Metal 3).
-- **Display at native 2×.** Use 1920 × 1080 (Default) on the 4K panel. Scaled modes make the iGPU resample every frame, and animations stutter.
+- **Display size.** "Larger Text" sizes are fine: looks-like 1680 × 945 measured lighter on the GPU than the native 2× 1920 × 1080 (utilization 8–9% vs 11–13%), because it draws fewer pixels. Only "More Space" sizes, which render above 4K, add GPU work.
 - **Mission Control at 4K is GPU-bound.** It peaks at 100% on the UHD 620; that is the hardware limit. Reduce Transparency helps.
 - **AGPM never power-limits the GPU** (`PlimitNS` = 0).
 

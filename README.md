@@ -24,6 +24,7 @@ This is a complete, tested OpenCore EFI for the Yoga 920 convertible. It also in
 - **Auto-rotate with a single switch.** A low-cost accelerometer reader (0 interrupts/s) is toggled by one Shortcut, and the touchscreen follows the rotation. → [Auto-rotate](docs/auto-rotate.md)
 - **Apple Music works, Dolby Atmos included.** A small login agent works around a FairPlay failure on Intel graphics in macOS 26. → [Apple Music](docs/apple-music.md)
 - **Full turbo.** CPUFriend with EPP 0x40 lifts single-core clocks from 2.87 GHz to 3.72 GHz. → [Performance](docs/cpu-performance.md)
+- **FileVault works.** Apple's pre-boot unlock screen runs through OpenCore, so a stolen laptop or a removed SSD gives nothing away. → [FileVault](docs/filevault.md)
 
 ## Hardware
 
@@ -45,7 +46,7 @@ This is a complete, tested OpenCore EFI for the Yoga 920 convertible. It also in
 
 | Feature | Status | Notes |
 |---|:---:|---|
-| Graphics: Metal 3, 4K HiDPI | ✅ | Use **1920×1080 (Default)**, the native 2× mode; scaled modes stutter |
+| Graphics: Metal 3, 4K HiDPI | ✅ | "Larger Text" sizes (e.g. 1680×945) cost no more GPU than 1920×1080 (measured); only "More Space" sizes add work |
 | Hardware video decoding (HEVC, H.264) | ✅ | VideoToolbox through Apple's Intel driver |
 | CPU power management, full turbo | ✅ | XCPM + CPUFriend (EPP 0x40) |
 | Battery, AC adapter | ✅ | VirtualSMC + SMCBatteryManager; Lenovo EC via YogaSMC |
@@ -59,6 +60,7 @@ This is a complete, tested OpenCore EFI for the Yoga 920 convertible. It also in
 | Lid sleep and wake | ✅ | Wake in ~1.2–1.4 s |
 | Booting from the internal disk, no USB | ✅ | Needs the Lenovo boot-path step in the [installation guide](docs/installation.md#4-install-to-the-internal-disk) |
 | Apple Music streaming, Dolby Atmos | ✅ | With `tools/musicfix` installed |
+| FileVault disk encryption | ✅ | Apple's unlock screen works through OpenCore ([guide](docs/filevault.md)) |
 | Hibernation | ⚠️ | Off by design (OpenCore `HibernateMode = None`); sleep is S3 only |
 | Tent / tablet mode | ⚠️ | Not tested yet together with LidWatch |
 | AirDrop, Universal Clipboard, Continuity | ❌ | The Intel card has no AWDL; needs a different Wi-Fi card |
@@ -85,6 +87,7 @@ tools/install-tools.sh   # Apple Music fix + Auto-Rotate switch; no sudo, safe t
 |---|---|
 | [Installation](docs/installation.md) | BIOS, SMBIOS, USB test, internal install, Lenovo boot path |
 | [Post-install](docs/post-install.md) | Sleep profile, tools installer, display, Wi-Fi, accounts |
+| [FileVault](docs/filevault.md) | Disk encryption: the OpenCore settings, turning it on, the unlock screen, recovery |
 | [Trackpad](docs/trackpad.md) | The post-wake interrupt storm and the patched VoodooRMI/RMII2C |
 | [Touchscreen sleep](docs/touchscreen-sleep.md) | The 180 s sleep panic, the wake freeze, and their fix |
 | [Lid](docs/lid.md) | LidWatch and the honest lid state on wake |
