@@ -10,18 +10,22 @@ python3 -I tools/gen-config-tables.py
 
 | Boot-arg | Purpose |
 |---|---|
-| `-amfipassbeta` | Lets `AMFIPass.kext` (from OpenCore Legacy Patcher) load on this macOS version |
 | `shda-lang=en` | SimpleHDA's language option |
 | `-nvmefaspm` | NVMeFix: force ASPM L1 on the NVMe SSD, for power saving |
-| `ipc_control_port_options=0` | Turns off a task-port hardening check that makes some apps (Electron-based apps, Firefox) crash when security settings are relaxed |
+| `unfairgva=4` | WhateverGreen: lets AppleGVA read a separate `hwgva-id`, which MusicGVA answers per process (Apple Music fix, see [Apple Music](apple-music.md)) |
 
 ## Security posture
 
-These settings are deliberate:
-
-- **SIP** `csr-active-config = 0x00000A03`: untrusted and unapproved kexts are allowed, and filesystem and root-authentication protections are relaxed. The system volume is still **sealed**, because nothing patches it, so macOS updates install normally. They may arrive as full installers rather than small deltas.
+- **SIP is fully on** (`csr-active-config = 0x00000000`), with authenticated root and a sealed system volume. Nothing patches the system volume, so macOS updates install normally. `AMFIPass.kext` is disabled and the old `-amfipassbeta` / `ipc_control_port_options=0` boot-args are gone; none of them were needed (Wi-Fi uses AirportItlwm on the native IO80211 stack).
 - **OpenCore:** `SecureBootModel = Disabled`, `Vault = Optional`, `ScanPolicy = 0`.
 - **NVRAM:** `boot-args` and `csr-active-config` are deleted and rewritten on every boot (`NVRAM > Delete`), so the config always wins and an NVRAM reset is safe.
+
+## Windows dual boot
+
+Patches that would otherwise reach Windows are limited to macOS:
+- The legacy TIMR / RTC / IPIC IRQ binary patches are disabled. DSDT renames (`_CRS` → `XCRS`) plus `SSDT-IRQFIX.aml` give macOS the same IRQ-less resources, and every other OS the originals.
+- `SSDT-YOGAPM.aml` (touchscreen `_PS3` delay, honest lid state on wake) only acts under `_OSI("Darwin")`.
+- `AudioDxe.efi` runs with `--restore-nosnoop`, so the boot chime does not leave the audio controller in a state Windows can't use.
 
 ## Generated tables
 
@@ -33,7 +37,7 @@ These settings are deliberate:
 | 0 | `Lilu.kext` | 1.7.3 | yes |
 | 1 | `CPUFriend.kext` | 1.3.0 | yes |
 | 2 | `CPUFriendDataProvider.kext` | 1.0.1 | yes |
-| 3 | `AMFIPass.kext` | 1.4.1 | yes |
+| 3 | `AMFIPass.kext` | 1.4.1 | no |
 | 4 | `AirportItlwm.kext` | 2.4.0 | yes |
 | 5 | `AppleALC.kext` | 1.9.9 | yes |
 | 6 | `BlueToolFixup.kext` | 2.7.3 | yes |
@@ -67,6 +71,7 @@ These settings are deliberate:
 | 34 | `VoodooRMI.kext/Contents/PlugIns/RMISMBus.kext` | 1.0 | no |
 | 35 | `SimpleHDA.kext` | 1.0.1 | yes |
 | 36 | `LidWatch.kext` | 1.0.0 | yes |
+| 37 | `MusicGVA.kext` | 1.0.0 | yes |
 
 ### ACPI tables (EFI/OC/ACPI)
 
@@ -87,6 +92,7 @@ These settings are deliberate:
 | `SSDT-ECRW.aml` | yes | SSDT-ECRW.aml |
 | `SSDT-LIDW.aml` | yes | SSDT-LIDW.aml - lid check/replay methods for LidWatch.kext |
 | `SSDT-YOGAPM.aml` | yes | SSDT-YOGAPM.aml - delayed TPD0 _PS3 (needs XPS3 rename) + LWOP lid check for patched _WAK |
+| `SSDT-IRQFIX.aml` | yes | Legacy IRQ fix (timer/RTC/PIC), macOS only |
 
 ### ACPI patches
 
@@ -104,11 +110,14 @@ These settings are deliberate:
 | Change Method(GPRW,2,N) to XPRW | yes |
 | HPET _CRS to XCRS Rename | yes |
 | HPET _STA to XSTA Rename | yes |
-| TIMR IRQ 0 Patch | yes |
-| RTC IRQ 8 Patch | yes |
-| IPIC IRQ 2 Patch | yes |
+| TIMR IRQ 0 Patch (replaced by SSDT-IRQFIX, macOS-only) | no |
+| RTC IRQ 8 Patch (replaced by SSDT-IRQFIX, macOS-only) | no |
+| IPIC IRQ 2 Patch (replaced by SSDT-IRQFIX, macOS-only) | no |
 | TPD0 touchscreen: rename _PS3 to XPS3 (SSDT-YOGAPM supplies a 2 s delayed _PS3 that calls XPS3) | yes |
 | _WAK: report lid open only when it is open (If IGDS -> If LWOP, needs SSDT-YOGAPM) | yes |
+| TIMR _CRS to XCRS (needs SSDT-IRQFIX) | yes |
+| RTC _CRS to XCRS (needs SSDT-IRQFIX) | yes |
+| IPIC _CRS to XCRS (needs SSDT-IRQFIX) | yes |
 
 ### UEFI drivers
 
@@ -128,8 +137,8 @@ These settings are deliberate:
 
 ### NVRAM / security
 
-- boot-args: `-amfipassbeta shda-lang=en -nvmefaspm ipc_control_port_options=0`
-- csr-active-config: `030a0000`
+- boot-args: `shda-lang=en -nvmefaspm unfairgva=4`
+- csr-active-config: `00000000`
 - SecureBootModel: `Disabled`, Vault: `Optional`, ScanPolicy: `0`
 - LauncherOption: `Full`, PickerMode: `External`, ShowPicker: `True`, Timeout: `5`
 - BlessOverride: `['\\EFI\\Microsoft\\Boot\\bootmgfw-orig.efi']`

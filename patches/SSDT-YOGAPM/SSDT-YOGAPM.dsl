@@ -12,6 +12,9 @@
  *    The firmware _WAK does "If (IGDS) { LIDS = One; GFX0.GLID (LIDS); Notify (LID0, 0x80) }" on every wake. A timer
  *    (RTC) wake with the lid shut therefore became a full wake with the display on. LWOP keeps that exact behaviour when
  *    the lid is open, and when it is shut it only records LIDS = 0 and returns Zero (no notify), so the wake stays dark.
+ *
+ * Both changes are macOS-only (_OSI ("Darwin")): other OSes booted through OpenCore, like Windows, get the firmware's
+ * behaviour (immediate power cut, plain If (IGDS)).
  */
 DefinitionBlock ("", "SSDT", 2, "YOGA", "YOGAPM", 0x00001000)
 {
@@ -28,7 +31,11 @@ DefinitionBlock ("", "SSDT", 2, "YOGA", "YOGAPM", 0x00001000)
     {
         Method (_PS3, 0, Serialized)  // _PS3: Power State 3
         {
-            Sleep (0x07D0)
+            If (_OSI ("Darwin"))
+            {
+                Sleep (0x07D0)
+            }
+
             XPS3 ()
         }
     }
@@ -36,6 +43,11 @@ DefinitionBlock ("", "SSDT", 2, "YOGA", "YOGAPM", 0x00001000)
     // Used by the patched _WAK in place of "If (IGDS)". One = run the firmware's lid-open block, Zero = skip it.
     Method (LWOP, 0, Serialized)
     {
+        If (!_OSI ("Darwin"))
+        {
+            Return (\IGDS)  // other OSes: the firmware's own "If (IGDS)"
+        }
+
         If (!\IGDS)
         {
             Return (Zero)

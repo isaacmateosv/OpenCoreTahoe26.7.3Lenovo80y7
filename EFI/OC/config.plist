@@ -126,6 +126,14 @@
 				<key>Path</key>
 				<string>SSDT-YOGAPM.aml</string>
 			</dict>
+			<dict>
+				<key>Comment</key>
+				<string>Legacy IRQ fix (timer/RTC/PIC), macOS only</string>
+				<key>Enabled</key>
+				<true/>
+				<key>Path</key>
+				<string>SSDT-IRQFIX.aml</string>
+			</dict>
 		</array>
 		<key>Delete</key>
 		<array/>
@@ -603,11 +611,11 @@
 				<key>BaseSkip</key>
 				<integer>0</integer>
 				<key>Comment</key>
-				<string>TIMR IRQ 0 Patch</string>
+				<string>TIMR IRQ 0 Patch (replaced by SSDT-IRQFIX, macOS-only)</string>
 				<key>Count</key>
 				<integer>0</integer>
 				<key>Enabled</key>
-				<true/>
+				<false/>
 				<key>Find</key>
 				<data>
 				IgEAeQA=
@@ -643,11 +651,11 @@
 				<key>BaseSkip</key>
 				<integer>0</integer>
 				<key>Comment</key>
-				<string>RTC IRQ 8 Patch</string>
+				<string>RTC IRQ 8 Patch (replaced by SSDT-IRQFIX, macOS-only)</string>
 				<key>Count</key>
 				<integer>0</integer>
 				<key>Enabled</key>
-				<true/>
+				<false/>
 				<key>Find</key>
 				<data>
 				IgABeQA=
@@ -683,11 +691,11 @@
 				<key>BaseSkip</key>
 				<integer>0</integer>
 				<key>Comment</key>
-				<string>IPIC IRQ 2 Patch</string>
+				<string>IPIC IRQ 2 Patch (replaced by SSDT-IRQFIX, macOS-only)</string>
 				<key>Count</key>
 				<integer>0</integer>
 				<key>Enabled</key>
-				<true/>
+				<false/>
 				<key>Find</key>
 				<data>
 				IgQAeQA=
@@ -782,6 +790,126 @@
 				<key>Replace</key>
 				<data>
 				oDxMV09QcAFMSURT
+				</data>
+				<key>ReplaceMask</key>
+				<data>
+				</data>
+				<key>Skip</key>
+				<integer>0</integer>
+				<key>TableLength</key>
+				<integer>0</integer>
+				<key>TableSignature</key>
+				<data>
+				RFNEVA==
+				</data>
+			</dict>
+			<dict>
+				<key>Base</key>
+				<string></string>
+				<key>BaseSkip</key>
+				<integer>0</integer>
+				<key>Comment</key>
+				<string>TIMR _CRS to XCRS (needs SSDT-IRQFIX)</string>
+				<key>Count</key>
+				<integer>1</integer>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				DEHQAQAIX0NSUw==
+				</data>
+				<key>Limit</key>
+				<integer>0</integer>
+				<key>Mask</key>
+				<data>
+				</data>
+				<key>OemTableId</key>
+				<data>
+				AAAAAAAAAAA=
+				</data>
+				<key>Replace</key>
+				<data>
+				DEHQAQAIWENSUw==
+				</data>
+				<key>ReplaceMask</key>
+				<data>
+				</data>
+				<key>Skip</key>
+				<integer>0</integer>
+				<key>TableLength</key>
+				<integer>0</integer>
+				<key>TableSignature</key>
+				<data>
+				RFNEVA==
+				</data>
+			</dict>
+			<dict>
+				<key>Base</key>
+				<string></string>
+				<key>BaseSkip</key>
+				<integer>0</integer>
+				<key>Comment</key>
+				<string>RTC _CRS to XCRS (needs SSDT-IRQFIX)</string>
+				<key>Count</key>
+				<integer>1</integer>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				DEHQCwAIX0NSUw==
+				</data>
+				<key>Limit</key>
+				<integer>0</integer>
+				<key>Mask</key>
+				<data>
+				</data>
+				<key>OemTableId</key>
+				<data>
+				AAAAAAAAAAA=
+				</data>
+				<key>Replace</key>
+				<data>
+				DEHQCwAIWENSUw==
+				</data>
+				<key>ReplaceMask</key>
+				<data>
+				</data>
+				<key>Skip</key>
+				<integer>0</integer>
+				<key>TableLength</key>
+				<integer>0</integer>
+				<key>TableSignature</key>
+				<data>
+				RFNEVA==
+				</data>
+			</dict>
+			<dict>
+				<key>Base</key>
+				<string></string>
+				<key>BaseSkip</key>
+				<integer>0</integer>
+				<key>Comment</key>
+				<string>IPIC _CRS to XCRS (needs SSDT-IRQFIX)</string>
+				<key>Count</key>
+				<integer>1</integer>
+				<key>Enabled</key>
+				<true/>
+				<key>Find</key>
+				<data>
+				C0HQCF9DUlM=
+				</data>
+				<key>Limit</key>
+				<integer>0</integer>
+				<key>Mask</key>
+				<data>
+				</data>
+				<key>OemTableId</key>
+				<data>
+				AAAAAAAAAAA=
+				</data>
+				<key>Replace</key>
+				<data>
+				C0HQCFhDUlM=
 				</data>
 				<key>ReplaceMask</key>
 				<data>
@@ -1005,7 +1133,7 @@
 				<key>Comment</key>
 				<string></string>
 				<key>Enabled</key>
-				<true/>
+				<false/>
 				<key>ExecutablePath</key>
 				<string>Contents/MacOS/AMFIPass</string>
 				<key>MaxKernel</key>
@@ -1609,6 +1737,24 @@
 				<key>PlistPath</key>
 				<string>Contents/Info.plist</string>
 			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>MusicGVA.kext</string>
+				<key>Comment</key>
+				<string>Per-process hwgva-id: Music -&gt; iMacPro1,1 (software FairPlay), others -&gt; real board-id (HW decode). Needs unfairgva=4</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/MusicGVA</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string>20.0.0</string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
 		</array>
 		<key>Block</key>
 		<array/>
@@ -1826,10 +1972,10 @@
 				AAAAAAAAAAAAAAAAAAA=
 				</data>
 				<key>boot-args</key>
-				<string>-amfipassbeta shda-lang=en -nvmefaspm ipc_control_port_options=0</string>
+				<string>shda-lang=en -nvmefaspm unfairgva=4</string>
 				<key>csr-active-config</key>
 				<data>
-				AwoAAA==
+				AAAAAA==
 				</data>
 				<key>prev-lang:kbd</key>
 				<data>
@@ -2009,7 +2155,7 @@
 		<array>
 			<dict>
 				<key>Arguments</key>
-				<string></string>
+				<string>--restore-nosnoop</string>
 				<key>Comment</key>
 				<string>UEFI audio driver (boot chime)</string>
 				<key>Enabled</key>

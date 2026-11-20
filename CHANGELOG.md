@@ -2,6 +2,14 @@
 
 How this EFI reached its current state on macOS Tahoe 26.7.3 (25G342). Each entry was verified on the hardware before the next one was made.
 
+## 2026-11-20: full SIP, MusicGVA, auto-brightness, Windows-safe patches
+
+- **SIP fully on** (`csr-active-config 00000000`), `AMFIPass.kext` disabled, boot-args `-amfipassbeta` and `ipc_control_port_options=0` removed. ([details](docs/configuration.md#security-posture))
+- **Apple Music:** `musicfix` retired (launch constraints under full SIP). New `MusicGVA.kext` + `unfairgva=4`: Music plays and every other app keeps hardware video decoding (H.264/HEVC 60/60 frames verified). ([details](docs/apple-music.md))
+- **Automatic brightness** from the real light sensor, switched by System Settings: `tools/autobright`. ([details](docs/auto-brightness.md))
+- **Sensor hub:** hinge angle and light measured with `tools/hubsensor`; Wacom AES pen works as a pointer (no pressure yet). ([details](docs/sensors-and-pen.md))
+- **Windows dual boot:** IRQ binary patches replaced by macOS-only `SSDT-IRQFIX`, `SSDT-YOGAPM` guarded by `_OSI("Darwin")`, AudioDxe `--restore-nosnoop`. ([details](docs/configuration.md#windows-dual-boot))
+
 ## 2026-11-15: FileVault, display note
 
 - **FileVault works.** Added `UEFI > ProtocolOverrides > AppleSmcIo` and `HashServices` (`FirmwareVolume`, `KeySupport`, `ProvideConsoleGop` and `UIScale` were already set). Verified: Apple's unlock screen worked with the internal keyboard, and encryption resumed after the restart. On this machine System Settings shows "Encryption finished" too early, and encryption only runs on AC power. ([guide](docs/filevault.md))

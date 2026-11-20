@@ -1,9 +1,12 @@
 #!/bin/bash
 # install-tools.sh: builds and installs this repo's everyday tools for the Yoga 920 Hackintosh in one go.
 #
-#   musicfix     keeps Apple Music playing (docs/apple-music.md); installed as a login agent
+#   autobright   automatic brightness from the real light sensor, switched by System Settings > Displays >
+#                "Automatically adjust brightness" (login agent; docs/auto-brightness.md)
 #   autorotate   the Auto-Rotate switch, driven by the "Auto-Rotate" Shortcut (starts off after each reboot)
 #   rotate       manual screen angle: rotate 0|90|180|270
+#   hubsensor    test tool: light sensor (lux) and hinge angle (docs/sensors-and-pen.md)
+# (musicfix is retired: with full SIP, Apple Music is fixed by the MusicGVA kext; this script removes its agent.)
 #
 # Usage: tools/install-tools.sh               build and install everything (safe to run again)
 #        tools/install-tools.sh --uninstall   remove the login agent, switch auto-rotate off, delete the programs
@@ -17,8 +20,9 @@ say() { printf '%s\n' "$*"; }
 if [ "${1:-}" = "--uninstall" ]; then
     if [ -x "$BIN/musicfix" ]; then "$BIN/musicfix" uninstall; fi
     if [ -x "$BIN/autorotate" ]; then "$BIN/autorotate" off >/dev/null; fi
-    rm -f "$BIN/musicfix" "$BIN/autorotate" "$BIN/rotate"
-    say "Removed musicfix (and its login agent), autorotate and rotate."
+    if [ -x "$BIN/autobright" ]; then "$BIN/autobright" off >/dev/null; fi
+    rm -f "$BIN/musicfix" "$BIN/autorotate" "$BIN/rotate" "$BIN/autobright" "$BIN/hubsensor"
+    say "Removed autobright (and its login agent), autorotate, rotate, hubsensor and any old musicfix."
     say "The Auto-Rotate shortcut stays in Shortcuts; delete it there if you no longer want it."
     exit 0
 fi
@@ -52,18 +56,22 @@ build() {   # build NAME SOURCE FLAGS...: compile next to the old program, then 
 say "Building:"
 build autorotate autorotate.c -Wno-unused-result -framework IOKit -framework CoreFoundation -framework ApplicationServices
 build rotate rotate.c -framework ApplicationServices -framework IOKit
-build musicfix musicfix.m -fobjc-arc -framework AppKit
+build autobright autobright.c -framework IOKit -framework CoreFoundation -framework ApplicationServices -lobjc
+build hubsensor hubsensor.c -framework IOKit -framework CoreFoundation
 
-say "Apple Music fix:"
-if [ ! -e /System/Library/Extensions/AppleIntelKBLGraphicsVADriver.bundle ]; then
-    say "  note: this Mac has no AppleIntelKBLGraphicsVADriver; musicfix was written for the Yoga 920's Intel UHD 620"
+if [ -x "$BIN/musicfix" ]; then
+    "$BIN/musicfix" uninstall >/dev/null 2>&1 || true
+    rm -f "$BIN/musicfix"
+    say "Removed the retired musicfix agent (Apple Music is fixed by the MusicGVA kext)."
 fi
-if ! out=$("$BIN/musicfix" install 2>&1); then
-    say "  musicfix install failed: $out"
-    exit 1
+
+say "Auto-brightness:"
+if "$BIN/autobright" status | grep -q on; then
+    launchctl kickstart -k "gui/$(id -u)/org.yoga920.autobright" && say "  agent restarted with the new build"
+else
+    "$BIN/autobright" on >/dev/null && say "  agent installed (login agent org.yoga920.autobright)"
 fi
-say "  $out"
-"$BIN/musicfix" status | sed 's/^/  /'
+say "  switch it with System Settings > Displays > Automatically adjust brightness"
 
 say "Auto-Rotate:"
 if [ "$("$BIN/autorotate" status)" = on ]; then

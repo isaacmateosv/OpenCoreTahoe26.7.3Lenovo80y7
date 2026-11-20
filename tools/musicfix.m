@@ -1,3 +1,5 @@
+// RETIRED 2026-11-20: with full SIP, launch constraints kill the sandboxed Music relaunch this tool relies on
+// (CODESIGNING 4, Launch Constraint Violation). Apple Music is now fixed by patches/MusicGVA. Kept for reference.
 // musicfix: keeps Apple Music playing on this Hackintosh (macOS 26 Tahoe, Intel UHD 620 on Apple's KBL driver).
 //
 // Why: Music's FairPlay first tries the Intel GPU's hardware key exchange (AppleIntelKBLGraphicsVADriver, PAVP via
