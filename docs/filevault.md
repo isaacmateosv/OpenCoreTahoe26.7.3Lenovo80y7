@@ -53,3 +53,27 @@ With FileVault on, your password is what protects a stolen SSD, so use a long pa
 
 - **Windows** on the same disk needs BitLocker separately.
 - **The EFI partition** stays unencrypted. Someone who gets the laptop twice could tamper with the boot files. A Lenovo BIOS administrator password and disabling USB boot make that harder. A full fix (UEFI Secure Boot with your own keys plus a signed OpenCore) is a much bigger project.
+
+## Optional: hide the OpenCore menu behind a password
+
+FileVault protects your files. A boot menu password covers the other gap: without it, anyone at the keyboard can pick Recovery, Reset NVRAM, or verbose and safe mode from the OpenCore menu. With it, the Mac boots straight into macOS. Hold **Esc** at power-on to get the menu, and OpenCore asks for the password before anything other than the normal macOS boot.
+
+Set it only on the internal disk, and keep a USB stick with this EFI unchanged (menu shown, no password). If you forget the password, boot the stick from the firmware boot menu (F12 on this Lenovo) and fix the internal config from macOS.
+
+1. Download the matching OpenCorePkg release from [acidanthera/OpenCorePkg](https://github.com/acidanthera/OpenCorePkg/releases). `Utilities/ocpasswordgen/ocpasswordgen` and `Utilities/ocvalidate/ocvalidate` are inside.
+2. Mount the internal EFI: `sudo diskutil mount disk0s1`.
+3. Run `ocpasswordgen` and type the password. Use plain ASCII only: the boot screen can't type accented letters. It prints `PasswordHash: <hex>` and `PasswordSalt: <hex>`.
+4. Write them into the config, which takes base64:
+   ```bash
+   P=/Volumes/EFI/EFI/OC/config.plist
+   cp "$P" ~/config-before-password.plist
+   plutil -replace Misc.Security.PasswordHash -data "$(echo -n HASH_HEX | xxd -r -p | base64)" "$P"
+   plutil -replace Misc.Security.PasswordSalt -data "$(echo -n SALT_HEX | xxd -r -p | base64)" "$P"
+   plutil -replace Misc.Security.EnablePassword -bool true "$P"
+   plutil -replace Misc.Boot.ShowPicker -bool false "$P"
+   find /Volumes/EFI/EFI -name '._*' -delete
+   ocvalidate "$P"
+   ```
+5. Restart once normally (no menu), then once holding Esc (menu plus password prompt).
+
+Don't commit the hash to a public repo. It's a slow hash (5,000,000 rounds of SHA-512), but a short password can still be guessed offline.
